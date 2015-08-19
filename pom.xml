@@ -7,7 +7,7 @@
   <artifactId>webmanager</artifactId>
   <packaging>war</packaging>
   <version>1.0-SNAPSHOT</version>
-  <name>webmanager Maven Webapp1</name>
+  <name>webmanager Maven Webapp2</name>
   <url>http://maven.apache.org</url>
   <dependencies>
     <dependency>
