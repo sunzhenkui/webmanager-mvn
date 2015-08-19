@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<!DOCTYPE mapper PUBLIC "-//ibatis.apache.org//DTD iBatis Mapper 3.0 //EN" "http://ibatis.apache.org/dtd/ibatis-3-mapper.dtd">
+
+<mapper namespace="TbUsers">
+  <resultMap id="tbUsersResult" type="tbUsers">
+    <result property="userId" column="user_id"/>
+    <result property="name" column="name"/>
+    <result property="password" column="password"/>
+    <result property="loginTimes" column="login_times"/>
+    <result property="mobile" column="mobile"/>
+    <result property="isEnable" column="is_enable"/>
+    <result property="depId" column="dep_id"/>
+  </resultMap>
+
+  
+  <sql id="condition" >
+	  <where>
+			<if test="name!=null and name!='' ">
+			AND name=#{name}
+			</if>
+			<if test="password!=null and password!='' ">
+			AND  password=#{password}
+			</if>
+			<if test="depId!=null and depId!='' ">
+			AND dep_id=#{depId}
+			</if>
+	  </where>
+  </sql>
+  
+     <select id="get" parameterType="int" resultMap="tbUsersResult">
+  		select * from tb_users where user_id=#{userId}
+  </select>
+  
+  <insert id="add" parameterType="tbUsers">
+  		insert into tb_users(user_id,name,password,login_times,mobile,is_enable,dep_id)
+  		values(#{userId},#{name},#{password},#{loginTimes},#{mobile},#{isEnable},#{depId})
+  </insert>
+  
+  <update id="update" parameterType="tbUsers">
+  		update tb_users set name=#{name},password=#{password},login_times=#{loginTimes},mobile=#{mobile},is_enable=#{isEnable},dep_id=#{depId}
+  		where user_id=#{userId}
+  </update>
+  
+  <delete id="delete" parameterType="int">
+  		delete from tb_users where user_id=#{userId}
+  </delete>
+  
+  <select id="queryList"  parameterType="tbUsers" resultMap="tbUsersResult">
+		select * from tb_users
+  		<include refid="condition"/>
+  </select>
+  
+    <select id="queryByName"  parameterType="String" resultMap="tbUsersResult">
+		select * from tb_users where name=#{name}
+  </select>
+  
+    <select id="getCount" parameterType="tbUsers" resultType="int">
+  		select count(*) from tb_users
+  		<include refid="condition" />
+  	</select>
+</mapper>

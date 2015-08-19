@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:aop="http://www.springframework.org/schema/aop"
+	xmlns:tx="http://www.springframework.org/schema/tx" xmlns:context="http://www.springframework.org/schema/context"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans  
+ http://www.springframework.org/schema/beans/spring-beans-4.0.xsd
+ http://www.springframework.org/schema/context  
+ http://www.springframework.org/schema/context/spring-context-4.0.xsd
+ http://www.springframework.org/schema/aop 
+ http://www.springframework.org/schema/aop/spring-aop-4.0.xsd
+ http://www.springframework.org/schema/tx 
+ http://www.springframework.org/schema/tx/spring-tx-4.0.xsd"
+	default-autowire="byName" default-lazy-init="true">
+
+	<bean id="propertyConfigurer"
+		class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+		<property name="locations">
+			<list>
+				<value>classpath:dbconfig.properties
+				</value>
+			</list>
+		</property>
+	</bean>
+
+
+	<bean id="BaseDataSource" class="com.mchange.v2.c3p0.ComboPooledDataSource"
+		destroy-method="close">
+		<property name="driverClass" value="com.mysql.jdbc.Driver" />
+		<property name="acquireIncrement" value="5"/>
+		<property name="idleConnectionTestPeriod" value="60"/>
+		<property name="maxIdleTime" value="600"/>
+		<property name="maxConnectionAge" value="0"/>
+		
+		<property name="initialPoolSize" value="50"/>
+		<property name="maxPoolSize" value="500"/>
+		
+		<property name="maxStatements" value="20000"/>
+		<property name="maxStatementsPerConnection" value="300"/>
+		<property name="numHelperThreads" value="20"/>
+		<property name="maxAdministrativeTaskTime" value="30"/>
+		<property name="acquireRetryAttempts" value="30"/>
+		<property name="acquireRetryDelay" value="1000"/>
+		<property name="autoCommitOnClose" value="false"/>
+		
+		<property name="automaticTestTable" value="Test"/>
+		<property name="preferredTestQuery" value="select 1 "/>
+		<property name="breakAfterAcquireFailure" value="false"/>
+		<property name="factoryClassLocation" value=""/>
+		<property name="forceIgnoreUnresolvedTransactions" value="false"/>
+		<property name="propertyCycle" value="300"/>
+		<property name="testConnectionOnCheckout" value="false"/>
+		<property name="testConnectionOnCheckin" value="false"/>
+		<property name="usesTraditionalReflectiveProxies" value="false"/>
+	 </bean>
+	<bean id="bussinessDataSource" class="com.mchange.v2.c3p0.ComboPooledDataSource"  destroy-method="close" parent="BaseDataSource">
+		<property name="jdbcUrl" value="${datasource.url}" />
+		<property name="user" value="${datasource.username}" />
+		<property name="password" value="${datasource.password}" />
+		<property name="maxPoolSize" value="${datasource.maxActive}" />
+		<property name="minPoolSize" value="${datasource.minActive}" />
+	</bean>
+
+	<bean id="lobHandler" class="org.springframework.jdbc.support.lob.DefaultLobHandler"
+		lazy-init="true" />
+		
+	<bean id="transactionManager"
+		class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+		<property name="dataSource" ref="bussinessDataSource" />
+	</bean>
+
+    <bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">  
+        <property name="dataSource" ref="bussinessDataSource" /> 
+        <property name="mapperLocations" value="classpath*:mapper/**/*.xml" />
+		<property name="configLocation" value="classpath:Mybatis-config.xml" />
+    </bean>
+      
+    <bean id="sqlSessionTemplate" class="org.mybatis.spring.SqlSessionTemplate">  
+        <constructor-arg name="sqlSessionFactory" ref="sqlSessionFactory" />  
+    </bean>
+
+	<aop:config proxy-target-class="true">
+		<aop:advisor
+			pointcut="execution(* com.imt.rbac.service..*Manager.*(..))"
+			advice-ref="txAdvice" />
+<!--		<aop:advisor
+			pointcut="execution(* com.imt.erp.service..*Manager.*(..))"
+			advice-ref="txAdvice" />-->
+	</aop:config>
+
+	<tx:advice id="txAdvice" transaction-manager="transactionManager">
+		<tx:attributes>
+			<tx:method name="insert*" rollback-for="Exception" />
+			<tx:method name="update*" rollback-for="Exception" />
+			<tx:method name="delete*" rollback-for="Exception" />
+			<tx:method name="save*" rollback-for="Exception" />
+			<tx:method name="add*" rollback-for="Exception" />
+			<tx:method name="modify*" rollback-for="Exception" />
+			<tx:method name="remove*" rollback-for="Exception" />
+			<tx:method name="create*" rollback-for="Exception" />
+			<tx:method name="new*" rollback-for="Exception" />
+			<tx:method name="*" read-only="true" />
+		</tx:attributes>
+	</tx:advice>
+
+	<context:annotation-config />
+	<context:component-scan base-package="com.imt" />
+
+</beans>

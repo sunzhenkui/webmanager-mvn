@@ -1,0 +1,12 @@
+.fm{ margin:0;padding:10px 30px;}
+.ftitle{font-size:14px;font-weight:bold;padding:5px 0;margin-bottom:10px;border-bottom:1px solid #ccc;} 
+.fitem{float:left;margin-bottom:5px;}
+.fitem label{display:inline-block;width:80px;}
+.clear{clear:both;}
+.btns{text-align: center;margin:10px 0px;}
+
+.am{ margin-top: 40px}
+.amr{overflow:hidden;border-bottom: 1px dotted #0066b0;}
+.amr .tul{text-align:center;font-weight:bold; float:left;display:block;width:100px;margin: 10px 5px;border-right: 1px solid  #0066b0;}
+.amr .dul{display:block;margin: 0px 120px;}
+.amr .dul li{float:left;text-align:center; width:200px;float:left;display:inline;line-height:10px;margin: 10px 0px;}

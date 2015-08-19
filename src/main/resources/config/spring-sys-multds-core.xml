@@ -1,0 +1,132 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:aop="http://www.springframework.org/schema/aop"
+	xmlns:tx="http://www.springframework.org/schema/tx" xmlns:context="http://www.springframework.org/schema/context"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans  
+ http://www.springframework.org/schema/beans/spring-beans-4.0.xsd "
+	default-autowire="byName" default-lazy-init="true">
+<!-- 
+	<bean id="propertyConfigurer"
+		class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+		<property name="locations">
+			<list>
+				<value>classpath:dbconfig.properties
+				</value>
+			</list>
+		</property>
+	</bean>
+
+
+	<bean id="BaseDataSource" class="com.mchange.v2.c3p0.ComboPooledDataSource"
+		destroy-method="close">
+		<property name="driverClass" value="com.mysql.jdbc.Driver" />
+		<property name="acquireIncrement" value="5"/>
+		<property name="idleConnectionTestPeriod" value="60"/>
+		<property name="maxIdleTime" value="600"/>
+		<property name="maxConnectionAge" value="0"/>
+		
+		<property name="initialPoolSize" value="50"/>
+		<property name="maxPoolSize" value="500"/>
+		
+		<property name="maxStatements" value="20000"/>
+		<property name="maxStatementsPerConnection" value="300"/>
+		<property name="numHelperThreads" value="20"/>
+		<property name="maxAdministrativeTaskTime" value="30"/>
+		<property name="acquireRetryAttempts" value="30"/>
+		<property name="acquireRetryDelay" value="1000"/>
+		<property name="autoCommitOnClose" value="false"/>
+		
+		<property name="automaticTestTable" value="Test"/>
+		<property name="preferredTestQuery" value="select 1 "/>
+		<property name="breakAfterAcquireFailure" value="false"/>
+		<property name="factoryClassLocation" value=""/>
+		<property name="forceIgnoreUnresolvedTransactions" value="false"/>
+		<property name="propertyCycle" value="300"/>
+		<property name="testConnectionOnCheckout" value="false"/>
+		<property name="testConnectionOnCheckin" value="false"/>
+		<property name="usesTraditionalReflectiveProxies" value="false"/>
+	 </bean>
+	<bean id="ds1" class="com.mchange.v2.c3p0.ComboPooledDataSource"  destroy-method="close" parent="BaseDataSource">
+		<property name="jdbcUrl" value="${datasource.url}" />
+		<property name="user" value="${datasource.username}" />
+		<property name="password" value="${datasource.password}" />
+		<property name="maxPoolSize" value="${datasource.maxActive}" />
+		<property name="minPoolSize" value="${datasource.minActive}" />
+	</bean>
+	
+	多数据源配置
+	<bean id="ds2" class="com.mchange.v2.c3p0.ComboPooledDataSource"  destroy-method="close" parent="BaseDataSource">
+		<property name="jdbcUrl" value="${datasource.url}" />
+		<property name="user" value="${datasource.username}" />
+		<property name="password" value="${datasource.password}" />
+		<property name="maxPoolSize" value="${datasource.maxActive}" />
+		<property name="minPoolSize" value="${datasource.minActive}" />
+	</bean>
+    <bean id="multipleDataSource" class="com.imt.framework.datasource.MultipleDataSource">
+        <property name="defaultTargetDataSource" ref="ds1"/>
+        <property name="targetDataSources">
+            <map>     
+                注意这里的value是和上面的DataSource的id对应，key要和下面的CustomerContextHolder中的常量对应
+                <entry value-ref="ds1" key="ds1"/>
+                <entry value-ref="ds2" key="ds2"/>
+            </map>   
+        </property>
+    </bean>
+         
+
+	
+		在做大字段处理的时候一定要用lobHandler 但是lobHandler针对于MySQL、DB2、MS
+		SQLServer、Oracle10g可以
+	
+	<bean id="lobHandler" class="org.springframework.jdbc.support.lob.DefaultLobHandler"
+		lazy-init="true" />
+		
+	<bean id="transactionManager"
+		class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+		<property name="dataSource" ref="multipleDataSource" />
+	</bean>
+
+    配置mybitasSqlSessionFactoryBean  
+    <bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">  
+        <property name="dataSource" ref="multipleDataSource" /> 
+        <property name="mapperLocations" value="classpath*:com/imt/mapper/**/*.xml" /> 
+		<property name="configLocation" value="classpath:Mybatis-config.xml" />
+    </bean>
+      
+    配置SqlSessionTemplate  
+    <bean id="sqlSessionTemplate" class="org.mybatis.spring.SqlSessionTemplate">  
+        <constructor-arg name="sqlSessionFactory" ref="sqlSessionFactory" />  
+    </bean>
+
+	<aop:config proxy-target-class="true">
+		<aop:advisor
+			pointcut="execution(* com.imt.mapper.rbac.service..*Manager.*(..))"
+			advice-ref="txAdvice" />
+		<aop:advisor
+			pointcut="execution(* com.imt.erp.service..*Manager.*(..))"
+			advice-ref="txAdvice" />
+	</aop:config>
+
+	<tx:advice id="txAdvice" transaction-manager="transactionManager">
+		<tx:attributes>
+			<tx:method name="insert*" rollback-for="Exception" />
+			<tx:method name="update*" rollback-for="Exception" />
+			<tx:method name="delete*" rollback-for="Exception" />
+			<tx:method name="save*" rollback-for="Exception" />
+			<tx:method name="add*" rollback-for="Exception" />
+			<tx:method name="modify*" rollback-for="Exception" />
+			<tx:method name="remove*" rollback-for="Exception" />
+			<tx:method name="create*" rollback-for="Exception" />
+			<tx:method name="new*" rollback-for="Exception" />
+			<tx:method name="*" read-only="true" />
+		</tx:attributes>
+	</tx:advice>
+
+	使Spring关注Annotation
+	<context:annotation-config />
+
+
+	让Spring通过自动扫描来查询和管理Bean
+	<context:component-scan base-package="com.imt" /> -->
+
+</beans>

@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<!DOCTYPE mapper PUBLIC "-//ibatis.apache.org//DTD iBatis Mapper 3.0 //EN" "http://ibatis.apache.org/dtd/ibatis-3-mapper.dtd">
+
+<mapper namespace="TbDepartment">
+  <resultMap id="tbDepartmentResult" type="tbDepartment">
+    <result property="depId" column="dep_id"/>
+    <result property="name" column="name"/>
+    <result property="description" column="description"/>
+    <result property="parentId" column="parent_id"/>
+	<result property="orderNo" column="order_no"/>
+  </resultMap>
+
+  <sql id="condition" >
+	  <where>
+			<if test="name!=null and name!='' ">
+			name like '%#{name}%'
+			</if>
+			<if test="parentId!=null">
+			AND parent_id=#{parentId}
+			</if>
+	  </where>
+  </sql>
+  
+     <select id="get" parameterType="int" resultMap="tbDepartmentResult">
+  		select * from tb_deparment where dep_id=#{depId}
+  </select>
+  
+  <insert id="add" parameterType="tbDepartment">
+  		insert into tb_deparment(dep_id,name,description,parent_id,order_no)
+  		values(#{depId},#{name},#{description},#{parentId},#{orderNo})
+  </insert>
+  
+  <update id="update" parameterType="tbDepartment">
+  		update tb_deparment set name=#{name},description=#{description},parent_id=#{parentId},order_no=#{orderNo}
+  		where dep_id=#{depId}
+  </update>
+  
+  <delete id="delete" parameterType="int">
+  		delete from tb_deparment where dep_id=#{depId}
+  </delete>
+  
+  <select id="queryList"  parameterType="tbDepartment" resultMap="tbDepartmentResult">
+		select * from tb_deparment
+  		<include refid="condition"/>
+  </select>
+
+   <select id="getCount" parameterType="tbDepartment" resultType="int">
+  		select count(*) from tb_deparment
+  		<include refid="condition" />
+  	</select>
+</mapper>

@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<!DOCTYPE mapper PUBLIC "-//ibatis.apache.org//DTD iBatis Mapper 3.0 //EN" "http://ibatis.apache.org/dtd/ibatis-3-mapper.dtd">
+
+<mapper namespace="TbMenus">
+  <resultMap id="tbMenusResult" type="tbMenus">
+    <result property="menuId" column="menu_id"/>
+    <result property="parentId" column="parent_id"/>
+    <result property="name" column="name"/>
+    <result property="nodeType" column="node_type"/>
+    <result property="orderNo" column="order_no"/>
+    <result property="url" column="url"/>
+  </resultMap>
+
+  
+  <sql id="condition" >
+	  <where>
+			<if test="parentId!=null">
+			AND parent_id=#{parentId}
+			</if>
+			<if test="nodeType!=null">
+			AND node_type=#{nodeType}
+			</if>
+	  </where>
+  </sql>
+  
+     <select id="get" parameterType="int" resultMap="tbMenusResult">
+  		select * from tb_menus where menu_id=#{menuId}
+  </select>
+  
+  <insert id="add" parameterType="tbMenus">
+  		insert into tb_menus(menu_id,parent_id,name,node_type,order_no,url)
+  		values(#{menuId},#{parentId},#{name},#{nodeType},#{orderNo},#{url})
+  </insert>
+  
+  <update id="update" parameterType="tbMenus">
+  		update tb_menus set name=#{name},parent_id=#{parentId},url=#{url},node_type=#{nodeType}
+  		,order_no=#{orderNo}
+  		where menu_id=#{menuId}
+  </update>
+  
+  <delete id="delete" parameterType="int">
+  		delete from tb_menus where menu_id=#{menuId}
+  </delete>
+  
+   <select id="queryList"  parameterType="tbMenus" resultMap="tbMenusResult">
+		select * from tb_menus
+  		<include refid="condition"/>
+  		  order by order_no desc
+  </select>
+
+
+   <select id="getCount" parameterType="tbMenus" resultType="int">
+  		select count(*) from tb_menus
+  		<include refid="condition" />
+  	</select>
+</mapper>

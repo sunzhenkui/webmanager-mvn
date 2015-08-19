@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<!DOCTYPE configuration PUBLIC "-//ibatis.apache.org//DTD Config 3.0//EN" "http://ibatis.apache.org/dtd/ibatis-3-config.dtd">
+
+<configuration>
+	<settings>
+		<setting name="lazyLoadingEnabled" value="false" />
+	</settings>
+	<typeAliases>  
+	 	<typeAlias alias="tbUsers" type="com.imt.rbac.model.UsersModel"/>
+	 	<typeAlias alias="tbUsergroups" type="com.imt.rbac.model.UserGroupsModel"/>
+	 	<typeAlias alias="tbMenus" type="com.imt.rbac.model.MenusModel"/>
+	 	<typeAlias alias="tbRoles" type="com.imt.rbac.model.RolesModel"/>
+	 	<typeAlias alias="tbResources" type="com.imt.rbac.model.ResourcesModel"/>
+	 	<typeAlias alias="tbPermissions" type="com.imt.rbac.model.PermissionsModel"/>
+	 	<typeAlias alias="tbUserAndRole" type="com.imt.rbac.model.UserAndRoleModel"/>
+	 	<typeAlias alias="tbGroupAndUser" type="com.imt.rbac.model.GroupAndUserModel"/>
+	 	<typeAlias alias="tbGroupAndRole" type="com.imt.rbac.model.GroupAndRoleModel"/>
+	 	<typeAlias alias="tbDepartment" type="com.imt.rbac.model.DepartmentModel"/>
+	 	<typeAlias alias="dictionary" type="com.imt.rbac.model.DictionaryModel"/>
+	 	<typeAlias alias="dictionaryData" type="com.imt.rbac.model.DictionaryDataModel"/>
+	 </typeAliases>  
+</configuration>

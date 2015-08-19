@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<!DOCTYPE mapper PUBLIC "-//ibatis.apache.org//DTD iBatis Mapper 3.0 //EN" "http://ibatis.apache.org/dtd/ibatis-3-mapper.dtd">
+
+<mapper namespace="TbUserAndRole">
+  <resultMap id="tbUserAndRoleResult" type="tbUserAndRole">
+    <result property="id" column="id"/>
+    <result property="userId" column="user_id"/>
+    <result property="roleId" column="role_id"/>
+    <collection column="role_id" property="role" select="TbRoles.get"> </collection>
+  </resultMap>
+
+  <resultMap id="tbUserAndRoleResult1" type="tbUserAndRole">
+    <result property="id" column="id"/>
+    <result property="userId" column="user_id"/>
+    <result property="roleId" column="role_id"/>
+    <association property="role" column="role_id" resultMap="tbRolesResult">
+    </association>
+  </resultMap>
+  
+  <resultMap id="tbRolesResult" type="tbRoles">
+    <result property="roleId" column="role_id"/>
+    <result property="name" column="name"/>
+    <result property="roleLevel" column="role_level"/>
+  </resultMap>
+  
+  <sql id="condition" >
+			<if test="userId!=null">
+			AND a.user_id=#{userId}
+			</if>
+			<if test="roleId!=null">
+			AND a.role_id=#{roleId}
+			</if>
+  </sql>
+  
+     <select id="get" parameterType="int" resultMap="tbUserAndRoleResult">
+  		select * from tb_user_role where menu_id=#{menuId}
+  </select>
+  
+  <insert id="add" parameterType="tbUserAndRole">
+  		insert into tb_user_role(id,user_id,role_id)
+  		values(#{id},#{userId},#{roleId})
+  </insert>
+  
+  <update id="update" parameterType="tbUserAndRole">
+  		update tb_user_role set user_id=#{userId},role_id=#{roleId}
+  		where id=#{id}
+  </update>
+  
+  <delete id="delete" parameterType="int">
+  		delete from tb_user_role where id=#{id}
+  </delete>
+  
+  <delete id="deleteForUserId" parameterType="int">
+  		delete from tb_user_role where user_id=#{userId}
+  </delete>
+  
+      <select id="queryList"  parameterType="tbUserAndRole" resultMap="tbUserAndRoleResult1">
+		select a.*,role.* from tb_user_role a,tb_roles role where a.role_id=role.role_id 
+  		<include refid="condition"/>
+  </select>
+  
+</mapper>

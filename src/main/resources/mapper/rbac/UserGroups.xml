@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<!DOCTYPE mapper PUBLIC "-//ibatis.apache.org//DTD iBatis Mapper 3.0 //EN" "http://ibatis.apache.org/dtd/ibatis-3-mapper.dtd">
+
+<mapper namespace="TbUsergroups">
+  <resultMap id="tbUsergroupsResult" type="tbUsergroups">
+    <result property="groupId" column="group_id"/>
+    <result property="name" column="name"/>
+  </resultMap>
+
+  <select id="get" parameterType="int" resultMap="tbUsergroupsResult">
+  		select * from tb_usergroups where group_id=#{groupId}
+  </select>
+  
+  <insert id="add" parameterType="tbUsergroups">
+  		insert into tb_usergroups(group_id,name)
+  		values(#{groupId},#{name})
+  </insert>
+  
+  <update id="update" parameterType="tbUsergroups">
+  		update tb_usergroups set name=#{name}
+  		where group_id=#{groupId}
+  </update>
+  
+  <delete id="delete" parameterType="int">
+  		delete from tb_usergroups where group_id=#{groupId}
+  </delete>
+  
+  <select id="queryList"  parameterType="tbUsergroups" resultMap="tbUsergroupsResult">
+		select * from tb_usergroups
+  </select>
+  
+   <select id="getCount" parameterType="tbUsergroups" resultType="int">
+  		select count(*) from tb_usergroups
+  	</select>
+</mapper>

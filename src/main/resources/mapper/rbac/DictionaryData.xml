@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<!DOCTYPE mapper PUBLIC "-//ibatis.apache.org//DTD iBatis Mapper 3.0 //EN" "http://ibatis.apache.org/dtd/ibatis-3-mapper.dtd">
+
+<mapper namespace="DictionaryData">
+  <resultMap id="dictionaryDataResult" type="dictionaryData">
+    <result property="id" column="id"/>
+    <result property="dicDataName" column="dic_data_name"/>
+    <result property="dicDataValue" column="dic_data_value"/>
+    <result property="dicValue" column="dic_value"/>
+  </resultMap>
+  
+  <sql id="condition" >
+	  <where>
+			<if test="dicValue!=null and dicValue!='' ">
+			AND dic_value=#{dicValue}
+			</if>
+	  </where>
+  </sql>
+  
+     <select id="get" parameterType="int" resultMap="dictionaryDataResult">
+  		select * from tb_dictionary_data where id=#{id}
+  	</select>
+  
+  <insert id="add" parameterType="dictionaryData">
+  		insert into tb_dictionary_data(id,dic_data_name,dic_data_value,dic_value)
+  		values(#{id},#{dicDataName},#{dicDataValue},#{dicValue})
+  </insert>
+  
+  <update id="update" parameterType="dictionaryData">
+  		update tb_dictionary_data set dic_data_name=#{dicDataName},dic_data_value=#{dicDataValue},dic_value=#{dicValue}
+  		where id=#{id}
+  </update>
+  
+  <delete id="delete" parameterType="int">
+  		delete from tb_dictionary_data where id=#{id}
+  </delete>
+  
+   <select id="queryList"  parameterType="dictionaryData" resultMap="dictionaryDataResult">
+		select * from tb_dictionary_data
+  		<include refid="condition"/>
+  		  order by dic_data_value desc
+  </select>
+
+   <select id="getCount" parameterType="dictionaryData" resultType="int">
+  		select count(*) from tb_dictionary_data
+  		<include refid="condition" />
+  	</select>
+</mapper>

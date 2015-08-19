@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<!DOCTYPE mapper PUBLIC "-//ibatis.apache.org//DTD iBatis Mapper 3.0 //EN" "http://ibatis.apache.org/dtd/ibatis-3-mapper.dtd">
+
+<mapper namespace="TbResources">
+  <resultMap id="tbResourcesResult" type="tbResources">
+    <result property="resourceId" column="resource_id"/>
+    <result property="name" column="name"/>
+    <result property="menuId" column="menu_id"/>
+    <result property="url" column="url"/>
+  </resultMap>
+
+  <resultMap id="tbResourcesResult1" type="tbResources">
+    <result property="resourceId" column="resource_id"/>
+    <result property="name" column="name"/>
+    <result property="menuId" column="menu_id"/>
+    <result property="url" column="url"/>
+    <association property="menu" column="menu_id" resultMap="tbMenusResult">
+    </association>
+  </resultMap>
+  
+    <resultMap id="tbMenusResult" type="tbMenus">
+    <result property="menuId" column="menu_id"/>
+    <result property="parentId" column="parent_id"/>
+    <result property="name" column="name"/>
+    <result property="nodeType" column="node_type"/>
+    <result property="orderNo" column="order_no"/>
+    <result property="url" column="url"/>
+  </resultMap>
+  
+  <sql id="condition" >
+			<if test="name!=null and name!='' ">
+			AND t.name like '%#{name}%'
+			</if>
+			<if test="menuId!=null and menuId!='' ">
+			AND t.menu_id=#{menuId}
+			</if>
+  </sql>
+  
+     <select id="get" parameterType="int" resultMap="tbResourcesResult">
+  		select * from tb_resources where resource_id=#{resourceId}
+  </select>
+  
+  <insert id="add" parameterType="tbResources">
+  		insert into tb_resources(resource_id,name,menu_id,url)
+  		values(#{resourceId},#{name},#{menuId},#{url})
+  </insert>
+  
+  <update id="update" parameterType="tbResources">
+  		update tb_resources set name=#{name},menu_id=#{menuId},url=#{url} 
+  		where resource_id=#{resourceId}
+  </update>
+  
+  <delete id="delete" parameterType="int">
+  		delete from tb_resources where resource_id=#{resourceId}
+  </delete>
+  
+      <select id="queryList"  parameterType="tbResources" resultMap="tbResourcesResult1">
+		select * from tb_resources t,tb_menus k where t.menu_id = k.menu_id
+  		<include refid="condition"/>
+  </select>
+  
+   <select id="getCount" parameterType="tbResources" resultType="int">
+		select count(*) from tb_resources t,tb_menus k where t.menu_id = k.menu_id
+  		<include refid="condition" />
+  	</select>
+</mapper>

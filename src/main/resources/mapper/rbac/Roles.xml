@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<!DOCTYPE mapper PUBLIC "-//ibatis.apache.org//DTD iBatis Mapper 3.0 //EN" "http://ibatis.apache.org/dtd/ibatis-3-mapper.dtd">
+
+<mapper namespace="TbRoles">
+  <resultMap id="tbRolesResult" type="tbRoles">
+    <result property="roleId" column="role_id"/>
+    <result property="name" column="name"/>
+    <result property="roleLevel" column="role_level"/>
+  </resultMap>
+
+  
+  <sql id="condition" >
+	  <where>
+			<if test="name!=null and name!='' ">
+			name like '%#{name}%'
+			</if>
+	  </where>
+  </sql>
+  
+     <select id="get" parameterType="int" resultMap="tbRolesResult">
+  		select * from tb_roles where role_id=#{roleId}
+  </select>
+  
+  <insert id="add" parameterType="tbRoles">
+  		insert into tb_roles(role_id,name,role_level)
+  		values(#{roleId},#{name},#{roleLevel})
+  </insert>
+  
+  <update id="update" parameterType="tbRoles">
+  		update tb_roles set name=#{name},role_level=#{roleLevel}
+  		where role_id=#{roleId}
+  </update>
+  
+  <delete id="delete" parameterType="int">
+  		delete from tb_roles where role_id=#{roleId}
+  </delete>
+  
+  <select id="queryList"  parameterType="tbRoles" resultMap="tbRolesResult">
+		select * from tb_roles
+  		<include refid="condition"/>
+  </select>
+
+   <select id="getCount" parameterType="tbRoles" resultType="int">
+  		select count(*) from tb_roles
+  		<include refid="condition" />
+  	</select>
+</mapper>

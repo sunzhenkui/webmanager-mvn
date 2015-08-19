@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"    
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"  
+    xmlns:aop="http://www.springframework.org/schema/aop"
+    xmlns:p="http://www.springframework.org/schema/p"    
+    xmlns:mvc="http://www.springframework.org/schema/mvc"
+	xmlns:util="http://www.springframework.org/schema/util"  
+    xmlns:context="http://www.springframework.org/schema/context"  
+    xsi:schemaLocation="   
+        http://www.springframework.org/schema/beans    
+        http://www.springframework.org/schema/beans/spring-beans-4.1.xsd
+        http://www.springframework.org/schema/mvc 
+        http://www.springframework.org/schema/mvc/spring-mvc-4.1.xsd
+        http://www.springframework.org/schema/aop 
+        http://www.springframework.org/schema/aop/spring-aop-4.1.xsd
+        http://www.springframework.org/schema/context    
+        http://www.springframework.org/schema/context/spring-context-4.1.xsd"
+    default-autowire="byName" >  
+      
+    <!-- 对web包中的所有controller类进行扫描，以完成Bean创建和自动依赖注入的功能 -->  
+    <context:component-scan base-package="com.imt.**.controller" />
+     
+<!-- <mvc:annotation-driven content-negotiation-manager="contentNegotiationManager" />   
+<bean id="contentNegotiationManager" class="org.springframework.web.accept.ContentNegotiationManagerFactoryBean">   
+    <property name="favorPathExtension" value="false" />  
+    <property name="favorParameter" value="false" />   
+    <property name="ignoreAcceptHeader" value="false" />   
+    <property name="mediaTypes" >   
+        <value>  
+            atom=application/atom+xml  
+            html=text/html  
+            json=application/json  
+            *=*/*  
+        </value>   
+    </property>  
+</bean>  
+	
+    <bean class="org.springframework.web.servlet.mvc.annotation.DefaultAnnotationHandlerMapping" />  
+    <bean class="org.springframework.web.servlet.mvc.annotation.AnnotationMethodHandlerAdapter" />  
+     -->
+        <mvc:annotation-driven/>
+	<bean id="multipartResolver"
+	    class="org.springframework.web.multipart.commons.CommonsMultipartResolver">  
+	    <!-- 设置上传文件的最大尺寸为1MB -->  
+	    <property name="maxUploadSize">  
+	        <value>5048576</value>
+	    </property>  
+	</bean>
+
+
+
+	<mvc:resources mapping="/images/**" location="/images/" />
+	<mvc:resources mapping="/css/**" location="/css/" />
+	<mvc:resources mapping="/ui/**" location="/ui/" /> 
+	<mvc:resources mapping="/js/**" location="/js/" /> 
+
+    <bean id="viewResolver" class="org.springframework.web.servlet.view.InternalResourceViewResolver"  
+     p:prefix="/" p:suffix=".jsp"/>
+
+
+	<bean id="sysInterceptor" class="com.imt.rbac.controller.helper.Interceptor.VisitorInterceptor" ></bean>
+    <aop:config>
+                 <!--切入点-->
+                 <aop:pointcut id="loginPoint"
+                 expression="execution(public * com.imt.rbac.controller.rbac..*.*(..))"/>
+<!--                                   <aop:pointcut id="loginPoint"
+                 expression="(execution(public * com.imt.mapper.rbac.controller.mapper.rbac..*.*(..)))  OR (execution(public * com.mstar.mrp.controller.mapper.rbac..*.*(..))) "/>   -->
+                 <!--在该切入点使用自定义拦截器-->
+                 <!-- <aop:advisor pointcut-ref="loginPoint" advice-ref="sysInterceptor"/> -->
+				<aop:advisor advice-ref="sysInterceptor" pointcut="execution(public * com.imt.rbac.controller.rbac..*.*(..))"/>
+<!-- 				<aop:advisor advice-ref="sysInterceptor" pointcut="execution(public * com.imt.ringbox.controller..*.*(..))"/> -->
+      </aop:config>
+
+</beans>

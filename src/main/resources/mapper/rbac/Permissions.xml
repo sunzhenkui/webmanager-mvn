@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<!DOCTYPE mapper PUBLIC "-//ibatis.apache.org//DTD iBatis Mapper 3.0 //EN" "http://ibatis.apache.org/dtd/ibatis-3-mapper.dtd">
+
+<mapper namespace="TbPermissions">
+  <resultMap id="tbPermissionsResult" type="tbPermissions">
+    <result property="permissionId" column="permission_id"/>
+    <result property="roleId" column="role_id"/>
+    <result property="resourceId" column="resource_id"/>
+  </resultMap>
+  
+  <resultMap id="tbPermissionsResult1" type="tbPermissions">
+    <result property="permissionId" column="permission_id"/>
+    <result property="roleId" column="role_id"/>
+    <result property="resourceId" column="resource_id"/>
+    <result property="resourceModel.resourceId" column="resource_id"/>
+	<result property="resourceModel.menuId" column="menu_id"/>
+	<result property="resourceModel.url" column="url"/>
+	<result property="resourceModel.name" column="name"/>
+  </resultMap>
+
+  <sql id="condition" >
+	  <where>
+			<if test="roleId!=null">
+			AND role_id=#{roleId}
+			</if>
+			<if test="resourceId!=null">
+			AND resource_id=#{resourceId}
+			</if>
+	  </where>
+  </sql>
+  
+     <select id="get" parameterType="int" resultMap="tbPermissionsResult">
+  		select * from tb_permissions where permission_id=#{permissionId}
+  </select>
+  
+  <insert id="add" parameterType="tbPermissions">
+  		insert into tb_permissions(permission_id,role_id,resource_id)
+  		values(#{permissionId},#{roleId},#{resourceId})
+  </insert>
+  
+  <update id="update" parameterType="tbPermissions">
+  		update tb_permissions set role_id=#{roleId},resource_id=#{resourceId} 
+  		where permission_id=#{permissionId}
+  </update>
+  
+  <delete id="delete" parameterType="int">
+  		delete from tb_permissions where permission_id=#{permissionId}
+  </delete>
+  
+    <delete id="deleteByResId" parameterType="tbPermissions">
+  		delete from tb_permissions where resource_id=#{resourceId} and role_id=#{roleId}
+  </delete>
+  
+  <select id="queryList"  parameterType="tbPermissions" resultMap="tbPermissionsResult">
+		select * from tb_permissions
+  		<include refid="condition"/>
+  </select>
+  
+  <select id="queryByRoleId"  parameterType="tbPermissions" resultMap="tbPermissionsResult1">
+		select * from tb_permissions a, tb_resources b,tb_menus c where a.resource_id = b.resource_id
+				and c.menu_id = b.menu_id
+			<if test="roleId!=null">
+			AND a.role_id=#{roleId}
+			</if>
+  </select>
+  
+   <select id="getCount" parameterType="tbPermissions" resultType="int">
+  		select count(*) from tb_permissions
+  		<include refid="condition" />
+  	</select>
+</mapper>

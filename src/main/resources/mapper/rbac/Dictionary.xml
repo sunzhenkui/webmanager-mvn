@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<!DOCTYPE mapper PUBLIC "-//ibatis.apache.org//DTD iBatis Mapper 3.0 //EN" "http://ibatis.apache.org/dtd/ibatis-3-mapper.dtd">
+
+<mapper namespace="Dictionary">
+  <resultMap id="dictionaryResult" type="dictionary">
+    <result property="dicName" column="dic_name"/>
+    <result property="dicValue" column="dic_value"/>
+  </resultMap>
+  
+  <sql id="condition" >
+	  <where>
+			<if test="dicValue!=null and dicValue!='' ">
+			AND dic_value=#{dicValue}
+			</if>
+	  </where>
+  </sql>
+  
+     <select id="get" parameterType="int" resultMap="dictionaryResult">
+  		select * from tb_dictionary where dic_value=#{dicValue}
+  </select>
+  
+  <insert id="add" parameterType="dictionary">
+  		insert into tb_dictionary(dic_name,dic_value)
+  		values(#{dicName},#{dicValue})
+  </insert>
+  
+  <update id="update" parameterType="dictionary">
+  		update tb_dictionary set dic_name=#{dicName},dic_value=#{dicValue}
+  		where dic_value=#{dicValue}
+  </update>
+  
+  <delete id="delete" parameterType="int">
+  		delete from tb_dictionary where dic_value=#{dicValue}
+  </delete>
+  
+   <select id="queryList"  parameterType="dictionary" resultMap="dictionaryResult">
+		select * from tb_dictionary
+  		<include refid="condition"/>
+  		  order by dic_value desc
+  </select>
+
+
+   <select id="getCount" parameterType="dictionary" resultType="int">
+  		select count(*) from tb_dictionary
+  		<include refid="condition" />
+  	</select>
+</mapper>
